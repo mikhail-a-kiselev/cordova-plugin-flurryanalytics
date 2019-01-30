@@ -46,9 +46,13 @@ public class FlurryAnalytics extends CordovaPlugin {
     public boolean execute(String action, JSONArray inputs, CallbackContext callbackContext) throws JSONException {
         PluginResult result = null;
         JSONObject options = inputs.optJSONObject(0);
+        
         if(LOG_EVENT.equals(action)){
-        	
+        	String eventname = "unknown";
         	Map<String, String> articleParams = new HashMap<String, String>();
+			if(options.has("name")){
+        		eventname = options.optString("name");
+        	}
         	if(options.has("type")){
         		articleParams.put("type", options.optString("type"));
         	}
@@ -56,7 +60,7 @@ public class FlurryAnalytics extends CordovaPlugin {
         		articleParams.put("level", options.optString("level"));
         	}
         	
-        	FlurryAgent.logEvent("Article_Read", articleParams); 
+        	FlurryAgent.logEvent(eventname, articleParams); 
         	
         } else if(END_TIMED_EVENT.equals(action)){
         	
