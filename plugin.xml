@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android"
-        id="cordova-plugin-yandexappmetrica"
+        id="cordova-plugin-flurryanalytics"
         version="0.0.1">
     <name>FlurryAnalytics</name>
     <author>Mikhail</author>
@@ -11,6 +11,9 @@
     <engines>
         <engine name="cordova-android" version="&gt;=3.5.0" />
     </engines>
+	<js-module name="cordova-plugin-yandexads" src="www/FlurryAnalytics.js">
+		<clobbers target="window.FlurryAnalytics" />
+	</js-module>
     <platform name="android">
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="flurryanalytics">
