@@ -8,6 +8,7 @@ import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CordovaWebView;
+import org.apache.cordova.LOG;
 import org.apache.cordova.PluginResult;
 //import org.apache.cordova.test.R;
 import org.json.JSONArray;
@@ -17,10 +18,11 @@ import org.json.JSONObject;
 import com.flurry.android.FlurryAgent;
 
 import android.app.Activity;
+import android.util.Log;
 
 public class FlurryAnalytics extends CordovaPlugin {
 
-	private static final String FLURRY_ID = "Your flurry identifier must be here"; 
+	private static final String FLURRY_ID = "JGDRBF9NP8DNZD3DQHZR"; 
 	private static final String LOG_EVENT = "logEvent";
 	private static final String END_TIMED_EVENT = "endTimedEvent";
 
@@ -33,47 +35,48 @@ public class FlurryAnalytics extends CordovaPlugin {
             	
 				FlurryAgent.init(mainactivity, FLURRY_ID);
 				FlurryAgent.onStartSession(mainactivity, FLURRY_ID);
+				LOG.d("flurry", "! init");
 			}
-			
-			
-			
 		});
 	}
-	public void onDestroy() {
-	    FlurryAgent.onEndSession(cordova.getActivity());
-	    super.onDestroy();
-    } 
-	@Override
+	
+	//@Override
     public boolean execute(String action, JSONArray inputs, CallbackContext callbackContext) throws JSONException {
-        PluginResult result = null;
+        Log.d("flurry", "! execute");
+		//PluginResult result = null;
         JSONObject options = inputs.optJSONObject(0);
-        
+        String eventname = "unknown";
+        Boolean timed = false;
+    	Map<String, String> articleParams = new HashMap<String, String>();
+    	Iterator<String> keys = options.keys();
+    	
+    	while(keys.hasNext()) {
+    	    String key = keys.next();
+    	    if (options.has(key)) {
+                if(key.equals("name")){
+                	eventname = options.optString("name");
+                } else if(key.equals("timed")){
+                	timed = true;
+                } else {
+                	articleParams.put(key, options.optString(key));
+                }
+    	    }
+    	}
+    	
         if(LOG_EVENT.equals(action)){
-        	String eventname = "unknown";
-        	Map<String, String> articleParams = new HashMap<String, String>();
-        	Iterator<String> keys = options.keys();
-        	
-        	while(keys.hasNext()) {
-        	    String key = keys.next();
-        	    if (options.get(key) instanceof JSONObject) {
-                    if(key.equals("name")){
-                    	eventname = options.optString("name");
-                    } else {
-                    	articleParams.put(key, options.optString(key));
-                    }
-        	    }
-        	}
-        	
-        	FlurryAgent.logEvent(eventname, articleParams); 
-        	
+        	FlurryAgent.logEvent(eventname, articleParams, timed); 
+        	LOG.d("flurry", "! log event");
         } else if(END_TIMED_EVENT.equals(action)){
-        	String eventname = "unknown";
-        	if(options.has("name")){
-        		eventname = options.optString("name");
-        	}
-        	FlurryAgent.endTimedEvent(eventname);
-        }
+        	FlurryAgent.endTimedEvent(eventname, articleParams);
+        	LOG.d("flurry", "! end timed event "+ eventname);
+        } else {
+			return false;
+		}
         
         return true;
 	}
+    public void onDestroy() {
+	    FlurryAgent.onEndSession(cordova.getActivity());
+	    super.onDestroy();
+    } 
 }
