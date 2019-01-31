@@ -1,6 +1,7 @@
 package com.codemech.flurryanalytics;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.cordova.CallbackContext;
@@ -50,20 +51,27 @@ public class FlurryAnalytics extends CordovaPlugin {
         if(LOG_EVENT.equals(action)){
         	String eventname = "unknown";
         	Map<String, String> articleParams = new HashMap<String, String>();
-			if(options.has("name")){
-        		eventname = options.optString("name");
-        	}
-        	if(options.has("type")){
-        		articleParams.put("type", options.optString("type"));
-        	}
-        	if(options.has("level")){
-        		articleParams.put("level", options.optString("level"));
+        	Iterator<String> keys = options.keys();
+        	
+        	while(keys.hasNext()) {
+        	    String key = keys.next();
+        	    if (options.get(key) instanceof JSONObject) {
+                    if(key.equals("name")){
+                    	eventname = options.optString("name");
+                    } else {
+                    	articleParams.put(key, options.optString(key));
+                    }
+        	    }
         	}
         	
         	FlurryAgent.logEvent(eventname, articleParams); 
         	
         } else if(END_TIMED_EVENT.equals(action)){
-        	
+        	String eventname = "unknown";
+        	if(options.has("name")){
+        		eventname = options.optString("name");
+        	}
+        	FlurryAgent.endTimedEvent(eventname);
         }
         
         return true;
