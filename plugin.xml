@@ -11,7 +11,7 @@
     <engines>
         <engine name="cordova-android" version="&gt;=3.5.0" />
     </engines>
-	<js-module name="cordova-plugin-yandexads" src="www/FlurryAnalytics.js">
+	<js-module name="cordova-plugin-flurryanalytics" src="www/FlurryAnalytics.js">
 		<clobbers target="window.FlurryAnalytics" />
 	</js-module>
     <platform name="android">
