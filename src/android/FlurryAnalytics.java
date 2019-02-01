@@ -8,7 +8,7 @@ import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CordovaWebView;
-import org.apache.cordova.LOG;
+
 import org.apache.cordova.PluginResult;
 //import org.apache.cordova.test.R;
 import org.json.JSONArray;
@@ -18,7 +18,7 @@ import org.json.JSONObject;
 import com.flurry.android.FlurryAgent;
 
 import android.app.Activity;
-import android.util.Log;
+
 
 public class FlurryAnalytics extends CordovaPlugin {
 
@@ -35,14 +35,12 @@ public class FlurryAnalytics extends CordovaPlugin {
             	
 				FlurryAgent.init(mainactivity, FLURRY_ID);
 				FlurryAgent.onStartSession(mainactivity, FLURRY_ID);
-				LOG.d("flurry", "! init");
 			}
 		});
 	}
 	
 	//@Override
     public boolean execute(String action, JSONArray inputs, CallbackContext callbackContext) throws JSONException {
-        Log.d("flurry", "! execute");
 		//PluginResult result = null;
         JSONObject options = inputs.optJSONObject(0);
         String eventname = "unknown";
@@ -64,11 +62,9 @@ public class FlurryAnalytics extends CordovaPlugin {
     	}
     	
         if(LOG_EVENT.equals(action)){
-        	FlurryAgent.logEvent(eventname, articleParams, timed); 
-        	LOG.d("flurry", "! log event");
+        	FlurryAgent.logEvent(eventname, articleParams, timed);
         } else if(END_TIMED_EVENT.equals(action)){
         	FlurryAgent.endTimedEvent(eventname, articleParams);
-        	LOG.d("flurry", "! end timed event "+ eventname);
         } else {
 			return false;
 		}
