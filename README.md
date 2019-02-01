@@ -15,6 +15,7 @@ Example:
 	"timed":"true"
 	
 }
+
 "name" is reserved word. Value with this key is name of event
 
 if there is "timed" key this event will be timed event
